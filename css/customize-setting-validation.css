@@ -1,0 +1,12 @@
+
+div.customize-setting-validation-message.error {
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+.customize-control-widget_form.customize-setting-invalid .widget .widget-top {
+	background-color: #FFE0E0;
+}
+.customize-control-nav_menu_item.customize-setting-invalid .menu-item-bar .menu-item-handle {
+	background-color: #FFE0E0;
+}

@@ -60,6 +60,9 @@ $wp_customize->add_setting( 'year_established', array(
 ) );
 </pre>
 
+The validation error message can also be set programmatically by JS by calling `control.validationMessage.set()`,
+for example from an extended `control.setting.validate()` method.  The `validationMessage` is inspired by HTML5.
+
 For a demonstration of the functionality made possible with this Customizer setting validation API,
 including how to do client-side validation, see the “[Customize_Validate_Entitled_Settings](https://gist.github.com/westonruter/1016332b18ee7946dec3)” plugin.
 It will validate that the Site Name (`blogname`), nav menu item titles, and widget titles are all fully populated.

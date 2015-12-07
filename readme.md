@@ -44,6 +44,10 @@ So this plugin aims to solve both these problems by:
 * Displaying validation error messages from server and from JS client.
 * Performing transactional/atomic setting saving, rejecting all settings if one is invalid.
 
+Note that the transactional/atomic saving here in setting validation is not the same as the
+[Customizer Transactions proposal](https://make.wordpress.org/core/2015/01/26/customizer-transactions-proposal/),
+although the two are complimentary. A transaction should not be published/committed until all of its settings are valid.
+
 To do server-side validation of a setting, implement a setting sanitizer that returns `null` or a `WP_Error` object:
 
 ```php

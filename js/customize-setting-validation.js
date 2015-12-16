@@ -8,31 +8,80 @@ wp.customize.settingValidation = (function( $, api ) {
 	 *
 	 * @type {object}
 	 */
-	self = {};
+	self = {
+		l10n: {
+			invalidValue: ''
+		},
+		validationMessageTemplate: wp.template( 'customize-setting-validation-message' )
+	};
 
 	/**
 	 * Decorate a Customizer control for validation message.
 	 *
-	 * @param {wp.customize.Control} control                     - Customizer control.
-	 * @param {wp.customize.Value}   [control.validationMessage] - Validation message.
+	 * In Core, this would be part of wp.customize.Setting.prototype.initialize.
+	 *
+	 * @param {wp.customize.Setting} setting                     - Customizer setting.
+	 * @param {wp.customize.Value}   [setting.validationMessage] - Validation message.
+	 * @param {wp.customize.Value}   [setting.valid]             - Validation message.
 	 */
-	self.setupControlForValidationMessage = function( control ) {
-		if ( control.validationMessage ) {
+	self.setupSettingForValidationMessage = function( setting ) {
+		var previousValidate;
+		if ( setting.validationMessage ) {
 			return;
 		}
-		control.validationMessage = new api.Value( '' );
-		control.validationMessage.bind( function( newMessage ) {
+		setting.validationMessage = new api.Value( '' );
+		setting.valid = new api.Value( true );
+		previousValidate = setting.validate;
+		setting.validate = function( inputValue ) {
+			var validatedValue = previousValidate.call( setting, inputValue );
+
+			// @todo Problem: validate block the value from getting saved to the setting, so it will not end up being invalid.
+			// @todo add setting.sanitize()
+			if ( validatedValue instanceof Error ) {
+				setting.validationMessage.set( validatedValue.message );
+				validatedValue = null;
+			} else if ( null === validatedValue ) {
+				setting.validationMessage.set( self.l10n.invalidValue );
+			} else {
+				setting.validationMessage.set( '' );
+			}
+			return validatedValue;
+		};
+	};
+
+	/**
+	 * Decorate a Customizer control for validation message.
+	 *
+	 * In Core, this would be part of wp.customize.Control.prototype.initialize.
+	 *
+	 * @param {wp.customize.Control} control                     - Customizer control.
+	 */
+	self.setupControlForValidationMessage = function( control ) {
+		var settingValidationMessages = new api.Values();
+
+		_.each( control.settings, function( setting ) {
+			settingValidationMessages.add( setting.id, setting.validationMessage );
+		} );
+
+		settingValidationMessages.bind( 'change', function() {
 			control.deferred.embedded.done( function() {
-				var validationMessageElement = self.getSettingValidationMessageElement( control );
-				if ( ! newMessage ) {
-					control.container.removeClass( 'customize-setting-invalid' );
+				var validationMessageElement = self.getSettingValidationMessageElement( control ), validationMessages = [];
+				settingValidationMessages.each( function( validationMessage ) {
+					if ( validationMessage.get() ) {
+						validationMessages.push( validationMessage.get() );
+					}
+				} );
+
+				if ( 0 === validationMessages.length ) {
 					validationMessageElement.slideUp( 'fast' );
 				} else {
-					control.container.addClass( 'customize-setting-invalid' );
-					validationMessageElement.hide();
-					validationMessageElement.text( newMessage );
 					validationMessageElement.slideDown( 'fast' );
 				}
+
+				control.container.toggleClass( 'customize-setting-invalid', 0 === validationMessages.length );
+				validationMessageElement.empty().append( $( $.trim(
+					self.validationMessageTemplate( { messages: validationMessages } )
+				) ) );
 			} );
 		} );
 	};
@@ -123,6 +172,9 @@ wp.customize.settingValidation = (function( $, api ) {
 		// @todo Also display response.message somewhere.
 	};
 
+	api.bind( 'add', function( setting ) {
+		self.setupSettingForValidationMessage( setting );
+	} );
 	api.control.bind( 'add', function( control ) {
 		self.setupControlForValidationMessage( control );
 	} );

@@ -80,7 +80,7 @@ wp.customize.settingValidation = (function( $, api ) {
 					validationMessageElement.slideDown( 'fast' );
 				}
 
-				control.container.toggleClass( 'customize-setting-invalid', 0 === validationMessages.length );
+				control.container.toggleClass( 'customize-setting-invalid', 0 !== validationMessages.length );
 				validationMessageElement.empty().append( $.trim(
 					self.validationMessageTemplate( { messages: validationMessages } )
 				) );

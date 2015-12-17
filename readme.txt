@@ -11,8 +11,14 @@ Core feature plugin for Customizer setting validation, error messaging, and tran
 == Description ==
 
 This feature plugin allows setting values to be validated and for any validation errors to block the Customizer from
-saving any setting until all are valid. The functionality here will be proposed for inclusion in WordPress Core via
-Trac [#34893](https://core.trac.wordpress.org/ticket/34893): Improve Customizer setting validation model.
+saving any setting until all are valid. Additionally, once a successful save is performed on the server, any settings
+that have resulting PHP-sanitized values which differ from the JS values will be updated on the client to match, while
+retaining the non-dirty saved sate.
+
+The functionality here will be proposed for inclusion in WordPress Core via Trac [#34893](https://core.trac.wordpress.org/ticket/34893):
+Improve Customizer setting validation model.
+
+[youtube https://youtu.be/ZNk6FhtS8TM]
 
 Settings in the Customizer rely on sanitization to ensure that only valid values get persisted to the database.
 The sanitization in the Customizer generally allows values to be passed through to be persisted and does not enforce
@@ -35,11 +41,15 @@ is that some settings would get saved, whereas others would not, and the user wo
 and which failed (again, since there is no standard mechanism for showing validation error message).
 The Customizer state would only partially get persisted to the database. This isn't good.
 
+Lastly, once the settings are successfully saved, if any of the PHP-sanitization differs in any way from the
+JS-sanitization on the client, the difference in value will not be apparent in the Customizer controls.
+
 So this plugin aims to solve both these problems by:
 
 * Validating settings on server before save.
 * Displaying validation error messages from server and from JS client.
 * Performing transactional/atomic setting saving, rejecting all settings if one is invalid.
+* Sync back the PHP-sanitized saved setting values to the JS client and ensure controls are populated with the actual persisted values.
 
 Note that the transactional/atomic saving here in setting validation is not the same as the
 [Customizer Transactions proposal](https://make.wordpress.org/core/2015/01/26/customizer-transactions-proposal/),

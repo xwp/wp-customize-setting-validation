@@ -80,7 +80,7 @@ wp.customize.settingValidation = (function( $, api ) {
 					validationMessageElement.slideDown( 'fast' );
 				}
 
-				control.container.toggleClass( 'customize-setting-invalid', 0 === validationMessages.length );
+				control.container.toggleClass( 'customize-setting-invalid', 0 !== validationMessages.length );
 				validationMessageElement.empty().append( $.trim(
 					self.validationMessageTemplate( { messages: validationMessages } )
 				) );
@@ -179,6 +179,31 @@ wp.customize.settingValidation = (function( $, api ) {
 		// @todo Also display response.message somewhere.
 	};
 
+	/**
+	 * Apply saved sanitized values from server to settings in JS client, if different.
+	 *
+	 * @param {object} response
+	 * @param {object} response.sanitized_setting_values
+	 */
+	self.afterSaveSuccess = function( response ) {
+		var wasSaved;
+		if ( ! response.sanitized_setting_values ) {
+			return;
+		}
+
+		wasSaved = api.state( 'saved' ).get();
+
+		_.each( response.sanitized_setting_values, function( value, id ) {
+			var setting = api( id );
+			if ( setting ) {
+				setting.set( value );
+				setting._dirty = false;
+			}
+		} );
+
+		api.state( 'saved' ).set( wasSaved );
+	};
+
 	api.bind( 'add', function( setting ) {
 		self.setupSettingForValidationMessage( setting );
 	} );
@@ -190,6 +215,9 @@ wp.customize.settingValidation = (function( $, api ) {
 	} );
 	api.bind( 'error', function( response ) {
 		self.afterSaveFailure( response );
+	} );
+	api.bind( 'saved', function( response ) {
+		self.afterSaveSuccess( response );
 	} );
 
 	return self;

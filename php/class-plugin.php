@@ -186,6 +186,38 @@ class Plugin extends Plugin_Base {
 	}
 
 	/**
+	 * Register any widgets that that get saved so that they will not get stripped
+	 * out when \WP_Customize_Widgets::sanitize_sidebar_widgets_js_instance() is called.
+	 *
+	 * @todo In Core, \WP_Customize_Widgets should register any widget that gets saved.
+	 *
+	 * @param \WP_Customize_Manager $wp_customize      Customize manager.
+	 * @param array                 $saved_setting_ids Saved setting IDs.
+	 */
+	public function register_widgets_for_saved_settings( $wp_customize, $saved_setting_ids ) {
+		global $wp_registered_widgets;
+
+		foreach ( $saved_setting_ids as $setting_id ) {
+			$parsed_setting_id = $wp_customize->widgets->parse_widget_setting_id( $setting_id );
+			if ( is_wp_error( $parsed_setting_id ) ) {
+				continue;
+			}
+			$widget_id = $parsed_setting_id['id_base'];
+			if ( $parsed_setting_id['number'] ) {
+				$widget_id .= '-' . $parsed_setting_id['number'];
+			}
+
+			/*
+			 * For the purposes of \WP_Customize_Widgets::sanitize_sidebar_widgets_js_instance()
+			 * all we need to do is make sure that the array key exists for the given widget ID.
+			 */
+			if ( ! isset( $wp_registered_widgets[ $widget_id ] ) ) {
+				$wp_registered_widgets[ $widget_id ] = null;
+			}
+		}
+	}
+
+	/**
 	 * Gather the saved setting values.
 	 *
 	 * @param \WP_Customize_Manager $wp_customize Customizer manager.
@@ -193,6 +225,8 @@ class Plugin extends Plugin_Base {
 	 */
 	public function gather_saved_setting_values( \WP_Customize_Manager $wp_customize ) {
 		$setting_ids = array_keys( $this->saved_setting_values );
+		$this->register_widgets_for_saved_settings( $wp_customize, $setting_ids );
+
 		foreach ( $setting_ids as $setting_id ) {
 			$setting = $wp_customize->get_setting( $setting_id );
 			if ( $setting ) {

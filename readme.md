@@ -21,7 +21,7 @@ retaining the non-dirty saved sate.
 The functionality here will be proposed for inclusion in WordPress Core via Trac [#34893](https://core.trac.wordpress.org/ticket/34893):
 Improve Customizer setting validation model.
 
-See demo video “[Customize Validate Entitled Settings](https://gist.github.com/westonruter/1016332b18ee7946dec3)” plugin which forces the site title,
+See demo video of “[Customize Validate Entitled Settings](https://gist.github.com/westonruter/1016332b18ee7946dec3)” plugin which forces the site title,
 widget titles, and nav menu item labels to all be populated and to start with an upper-case letter:
 
 [![Play video on YouTube](https://i1.ytimg.com/vi/ZNk6FhtS8TM/hqdefault.jpg)](https://www.youtube.com/watch?v=ZNk6FhtS8TM)

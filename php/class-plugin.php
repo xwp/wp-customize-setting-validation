@@ -20,6 +20,13 @@ class Plugin extends Plugin_Base {
 	public $invalid_settings = array();
 
 	/**
+	 * Sanitized values of saved settings.
+	 *
+	 * @var array
+	 */
+	public $saved_setting_values = array();
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
@@ -43,6 +50,11 @@ class Plugin extends Plugin_Base {
 
 		// Priority is set to 100 so that plugins can attach validation-sanitization filters at default priority of 10.
 		add_action( 'customize_validate_settings', array( $this, 'validate_settings' ), 100 );
+
+		// Priority set to 1000 in case a plugin dynamically adds a setting just in time.
+		add_action( 'customize_save', array( $this, '_add_actions_for_flagging_saved_settings' ), 1000 );
+
+		add_action( 'customize_save_after', array( $this, 'gather_saved_setting_values' ) );
 
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_templates' ), 1 );
 	}
@@ -141,6 +153,55 @@ class Plugin extends Plugin_Base {
 	}
 
 	/**
+	 * Keep track of which settings were actually saved.
+	 *
+	 * Note that the footwork with id_bases is needed because there is no
+	 * action for customize_save_{$setting_id}.
+	 *
+	 * @access private
+	 * @param \WP_Customize_Manager $wp_customize Customize manager.
+	 * @action customize_save
+	 */
+	public function _add_actions_for_flagging_saved_settings( \WP_Customize_Manager $wp_customize ) {
+		$seen_id_bases = array();
+		foreach ( $wp_customize->settings() as $setting ) {
+			$id_data = $setting->id_data();
+			if ( ! isset( $seen_id_bases[ $id_data['base'] ] ) ) {
+				add_action( 'customize_save_' . $id_data['base'], array( $this, '_flag_saved_setting_value' ) );
+				$seen_id_bases[ $id_data['base'] ] = true;
+			}
+		}
+	}
+
+	/**
+	 * Flag which settings were saved.
+	 *
+	 * @access private
+	 * @param \WP_Customize_Setting $setting Saved setting.
+	 * @see \WP_Customize_Setting::save()
+	 * @action customize_save
+	 */
+	public function _flag_saved_setting_value( \WP_Customize_Setting $setting ) {
+		$this->saved_setting_values[ $setting->id ] = null;
+	}
+
+	/**
+	 * Gather the saved setting values.
+	 *
+	 * @param \WP_Customize_Manager $wp_customize Customizer manager.
+	 * @action customize_save_after
+	 */
+	public function gather_saved_setting_values( \WP_Customize_Manager $wp_customize ) {
+		$setting_ids = array_keys( $this->saved_setting_values );
+		foreach ( $setting_ids as $setting_id ) {
+			$setting = $wp_customize->get_setting( $setting_id );
+			if ( $setting ) {
+				$this->saved_setting_values[ $setting_id ] = $setting->js_value();
+			}
+		}
+	}
+
+	/**
 	 * Export any invalid setting data to the Customizer JS client.
 	 *
 	 * @filter customize_save_response
@@ -151,6 +212,9 @@ class Plugin extends Plugin_Base {
 	public function filter_customize_save_response( $response ) {
 		if ( ! empty( $this->invalid_settings ) ) {
 			$response['invalid_settings'] = $this->invalid_settings;
+		}
+		if ( ! empty( $this->saved_setting_values ) ) {
+			$response['sanitized_setting_values'] = $this->saved_setting_values;
 		}
 		return $response;
 	}

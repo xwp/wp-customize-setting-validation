@@ -54,19 +54,21 @@ wp.customize.settingValidation = (function( $, api ) {
 	 *
 	 * In Core, this would be part of wp.customize.Control.prototype.initialize.
 	 *
-	 * @param {wp.customize.Control} control                     - Customizer control.
+	 * @param {wp.customize.Control} control - Customizer control.
+	 * @param {wp.customize.Values}  control._settingValidationMessages - Customizer control.
 	 */
 	self.setupControlForValidationMessage = function( control ) {
-		var settingValidationMessages = new api.Values();
+		control._settingValidationMessages = new api.Values();
 
 		_.each( control.settings, function( setting ) {
-			settingValidationMessages.add( setting.id, setting.validationMessage );
+			control._settingValidationMessages.add( setting.id, setting.validationMessage );
 		} );
 
-		settingValidationMessages.bind( 'change', function() {
+		control._settingValidationMessages.bind( 'change', function() {
 			control.deferred.embedded.done( function() {
-				var validationMessageElement = self.getSettingValidationMessageElement( control ), validationMessages = [];
-				settingValidationMessages.each( function( validationMessage ) {
+				var validationMessageElement = self.getSettingValidationMessageElement( control ),
+					validationMessages = [];
+				control._settingValidationMessages.each( function( validationMessage ) {
 					if ( validationMessage.get() ) {
 						validationMessages.push( validationMessage.get() );
 					}
@@ -79,9 +81,9 @@ wp.customize.settingValidation = (function( $, api ) {
 				}
 
 				control.container.toggleClass( 'customize-setting-invalid', 0 === validationMessages.length );
-				validationMessageElement.empty().append( $( $.trim(
+				validationMessageElement.empty().append( $.trim(
 					self.validationMessageTemplate( { messages: validationMessages } )
-				) ) );
+				) );
 			} );
 		} );
 	};
@@ -121,8 +123,10 @@ wp.customize.settingValidation = (function( $, api ) {
 	 * Reset the validation messages and capture the settings that were dirty.
 	 */
 	self.beforeSave = function() {
-		api.control.each( function( control ) {
-			control.validationMessage.set( '' );
+		api.each( function( setting ) {
+			if ( setting.validationMessage ) {
+				setting.validationMessage.set( '' );
+			}
 		} );
 	};
 
@@ -140,11 +144,14 @@ wp.customize.settingValidation = (function( $, api ) {
 
 		// Find the controls that correspond to each invalid setting.
 		_.each( response.invalid_settings, function( invalidMessage, settingId ) {
+			var setting = api( settingId );
+			if ( setting ) {
+				setting.validationMessage.set( invalidMessage );
+			}
+
 			api.control.each( function( control ) {
 				_.each( control.settings, function( controlSetting ) {
 					if ( controlSetting.id === settingId ) {
-						self.setupControlForValidationMessage( control ); // Make sure control.validationMessage is set.
-						control.validationMessage.set( invalidMessage );
 						invalidControls.push( control );
 					}
 				} );

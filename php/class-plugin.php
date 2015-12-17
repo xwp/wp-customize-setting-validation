@@ -44,7 +44,7 @@ class Plugin extends Plugin_Base {
 		// Priority is set to 100 so that plugins can attach validation-sanitization filters at default priority of 10.
 		add_action( 'customize_validate_settings', array( $this, 'validate_settings' ), 100 );
 
-		add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_templates' ) );
+		add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_templates' ), 1 );
 	}
 
 	/**

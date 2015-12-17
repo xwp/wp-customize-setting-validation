@@ -185,14 +185,15 @@ wp.customize.settingValidation = (function( $, api ) {
 	 * @param {object} response
 	 * @param {object} response.sanitized_setting_values
 	 */
-	self.afterSaveSuccess = function ( response ) {
+	self.afterSaveSuccess = function( response ) {
+		var wasSaved;
 		if ( ! response.sanitized_setting_values ) {
 			return;
 		}
 
-		var wasSaved = api.state( 'saved' ).get();
+		wasSaved = api.state( 'saved' ).get();
 
-		_.each( response.sanitized_setting_values, function ( value, id ) {
+		_.each( response.sanitized_setting_values, function( value, id ) {
 			var setting = api( id );
 			if ( setting ) {
 				setting.set( value );

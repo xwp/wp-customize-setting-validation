@@ -16,7 +16,7 @@ Core feature plugin for Customizer setting validation, error messaging, and tran
 This feature plugin allows setting values to be validated and for any validation errors to block the Customizer from
 saving any setting until all are valid. Additionally, once a successful save is performed on the server, any settings
 that have resulting PHP-sanitized values which differ from the JS values will be updated on the client to match, while
-retaining the non-dirty saved sate.
+retaining the non-dirty saved state.
 
 The functionality here will be proposed for inclusion in WordPress Core via Trac [#34893](https://core.trac.wordpress.org/ticket/34893):
 Improve Customizer setting validation model.

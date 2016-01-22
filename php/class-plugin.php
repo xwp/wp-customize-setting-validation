@@ -110,6 +110,9 @@ class Plugin extends Plugin_Base {
 	 * @param \WP_Customize_Manager $wp_customize Customizer manager.
 	 */
 	public function validate_settings( \WP_Customize_Manager $wp_customize ) {
+		global $wp_registered_widget_updates;
+		$sanitized_value = null;
+
 		/*
 		 * Check to see if any of the registered settings are invalid, and for
 		 * those that are invalid, build an array of the invalid messages.
@@ -123,7 +126,44 @@ class Plugin extends Plugin_Base {
 			if ( is_null( $unsanitized_value ) ) {
 				continue;
 			}
-			$sanitized_value = $setting->sanitize( $unsanitized_value );
+			$parsed_widget_id = $wp_customize->widgets->parse_widget_setting_id( $setting_id );
+			$is_empty_widget_instance = (
+				! is_wp_error( $parsed_widget_id )
+				&&
+				is_array( $unsanitized_value )
+				&&
+				empty( $unsanitized_value )
+				&&
+				! empty( $wp_customize->widgets )
+			);
+			if ( $is_empty_widget_instance ) {
+				$instance = null;
+				foreach ( (array) $wp_registered_widget_updates as $name => $control ) {
+					$is_wp_widget = (
+						$name === $parsed_widget_id['id_base']
+						&&
+						is_callable( $control['callback'] )
+						&&
+						is_array( $control['callback'] )
+						&&
+						$control['callback'][0] instanceof \WP_Widget
+					);
+					if ( $is_wp_widget ) {
+						// Note that error suppression is needed because a widget update() callback may have default values.
+						// @todo All Core widgets should have proper defaults if the incoming array is empty.
+						$instance = @call_user_func( array( $control['callback'][0], 'update' ), array(), array() );
+						$sanitized_value = $wp_customize->widgets->sanitize_widget_js_instance( $instance );
+						if ( ! is_null( $sanitized_value ) && ! is_wp_error( $sanitized_value ) ) {
+							$wp_customize->set_post_value( $setting_id, $sanitized_value );
+						}
+						break;
+					}
+				}
+			}
+
+			if ( ! isset( $sanitized_value ) ) {
+				$sanitized_value = $setting->sanitize( $unsanitized_value );
+			}
 			if ( is_null( $sanitized_value ) ) {
 				$sanitized_value = new \WP_Error( 'invalid_value', __( 'Invalid value.', 'customize-setting-validation' ) );
 			}

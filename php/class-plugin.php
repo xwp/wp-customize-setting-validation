@@ -120,6 +120,9 @@ class Plugin extends Plugin_Base {
 			if ( ! $setting ) {
 				continue;
 			}
+			if ( is_null( $unsanitized_value ) ) {
+				continue;
+			}
 			$sanitized_value = $setting->sanitize( $unsanitized_value );
 			if ( is_null( $sanitized_value ) ) {
 				$sanitized_value = new \WP_Error( 'invalid_value', __( 'Invalid value.', 'customize-setting-validation' ) );

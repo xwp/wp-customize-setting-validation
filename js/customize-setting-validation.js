@@ -61,7 +61,9 @@ wp.customize.settingValidation = (function( $, api ) {
 		control._settingValidationMessages = new api.Values();
 
 		_.each( control.settings, function( setting ) {
-			control._settingValidationMessages.add( setting.id, setting.validationMessage );
+			var controlSettingValidationMessage = new api.Value();
+			control._settingValidationMessages.add( setting.id, controlSettingValidationMessage );
+			controlSettingValidationMessage.sync( setting.validationMessage );
 		} );
 
 		control._settingValidationMessages.bind( 'change', function() {

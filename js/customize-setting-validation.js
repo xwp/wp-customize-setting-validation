@@ -58,19 +58,19 @@ wp.customize.settingValidation = (function( $, api ) {
 	 * @param {wp.customize.Values}  control._settingValidationMessages - Customizer control.
 	 */
 	self.setupControlForValidationMessage = function( control ) {
-		control._settingValidationMessages = new api.Values();
+		control.settingValidationMessages = new api.Values();
 
 		_.each( control.settings, function( setting ) {
 			var controlSettingValidationMessage = new api.Value();
-			control._settingValidationMessages.add( setting.id, controlSettingValidationMessage );
+			control.settingValidationMessages.add( setting.id, controlSettingValidationMessage );
 			controlSettingValidationMessage.sync( setting.validationMessage );
 		} );
 
-		control._settingValidationMessages.bind( 'change', function() {
+		control.settingValidationMessages.bind( 'change', function() {
 			control.deferred.embedded.done( function() {
 				var validationMessageElement = self.getSettingValidationMessageElement( control ),
 					validationMessages = [];
-				control._settingValidationMessages.each( function( validationMessage ) {
+				control.settingValidationMessages.each( function( validationMessage ) {
 					if ( validationMessage.get() ) {
 						validationMessages.push( validationMessage.get() );
 					}

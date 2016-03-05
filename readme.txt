@@ -1,7 +1,7 @@
 === Customize Setting Validation ===
 Contributors: westonruter, xwp
 Requires at least: 4.4
-Tested up to: 4.4
+Tested up to: 4.5-beta2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -90,3 +90,9 @@ The validation is done both on the client and on the server.
 1. Invalid site title.
 2. Invalid widget title.
 3. Invalid nav menu item title.
+
+== Changelog ==
+
+= 0.1 =
+
+Initial release.

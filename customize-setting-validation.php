@@ -10,7 +10,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: customize-setting-validation
  *
- * Copyright (c) 2015 XWP (https://xwp.co/)
+ * Copyright (c) 2016 XWP (https://xwp.co/)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2 or, at

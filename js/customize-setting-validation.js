@@ -77,9 +77,9 @@ wp.customize.settingValidation = (function( $, api ) {
 				} );
 
 				if ( 0 === validationMessages.length ) {
-					validationMessageElement.slideUp( 'fast' );
+					validationMessageElement.stop().slideUp( 'fast' );
 				} else {
-					validationMessageElement.slideDown( 'fast' );
+					validationMessageElement.stop().slideDown( 'fast' );
 				}
 
 				control.container.toggleClass( 'customize-setting-invalid', 0 !== validationMessages.length );

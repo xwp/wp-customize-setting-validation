@@ -79,7 +79,9 @@ wp.customize.settingValidation = (function( $, api ) {
 				if ( 0 === validationMessages.length ) {
 					validationMessageElement.stop().slideUp( 'fast' );
 				} else {
-					validationMessageElement.stop().slideDown( 'fast' );
+					validationMessageElement.stop().slideDown( 'fast', null, function() {
+						$( this ).css( 'height', 'auto' );
+					} );
 				}
 
 				control.container.toggleClass( 'customize-setting-invalid', 0 !== validationMessages.length );

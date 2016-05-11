@@ -1,3 +1,4 @@
 PATH_INCLUDES='*.php *.js *.json php/* tests/* js/* css/*'
 PHPCS_IGNORE=vendor
 SVN_URL=https://plugins.svn.wordpress.org/customize-setting-validation/
+ASSETS_DIR=wp-assets

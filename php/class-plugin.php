@@ -121,6 +121,7 @@ class Plugin extends Plugin_Base {
 		 */
 		$unsanitized_post_values = $wp_customize->unsanitized_post_values();
 		foreach ( $unsanitized_post_values as $setting_id => $unsanitized_value ) {
+			$sanitized_value = null;
 			$setting = $wp_customize->get_setting( $setting_id );
 			if ( ! $setting ) {
 				continue;

@@ -7,7 +7,7 @@ Core feature plugin for Customizer setting validation, error messaging, and tran
 **Contributors:** [westonruter](https://profiles.wordpress.org/westonruter), [xwp](https://profiles.wordpress.org/xwp)  
 **Requires at least:** 4.4  
 **Tested up to:** 4.6-alpha  
-**Stable tag:** trunk (master)  
+**Stable tag:** 0.1.1  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 
 [![Build Status](https://travis-ci.org/xwp/wp-customize-setting-validation.svg?branch=master)](https://travis-ci.org/xwp/wp-customize-setting-validation) [![Coverage Status](https://coveralls.io/repos/xwp/wp-customize-setting-validation/badge.svg?branch=master)](https://coveralls.io/github/xwp/wp-customize-setting-validation) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com) [![devDependency Status](https://david-dm.org/xwp/wp-customize-setting-validation/dev-status.svg)](https://david-dm.org/xwp/wp-customize-setting-validation#info=devDependencies) 

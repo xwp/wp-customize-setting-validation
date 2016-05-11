@@ -69,7 +69,7 @@ class Plugin extends Plugin_Base {
 
 		$handle = 'customize-setting-validation';
 		$src = $this->dir_url . 'js/customize-setting-validation.js';
-		$deps = array( 'customize-controls' );
+		$deps = array( 'customize-controls', 'wp-util' );
 		$in_footer = true;
 		wp_enqueue_script( $handle, $src, $deps, $ver, $in_footer );
 

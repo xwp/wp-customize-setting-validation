@@ -1,7 +1,7 @@
 === Customize Setting Validation ===
 Contributors: westonruter, xwp
 Requires at least: 4.4
-Tested up to: 4.5-beta2
+Tested up to: 4.6-alpha
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -74,6 +74,14 @@ The validation is done both on the client and on the server.
 3. Invalid nav menu item title.
 
 == Changelog ==
+
+= 0.1.1 =
+
+* Handle relative `WP_CONTENT_DIR` in locate_plugin.
+* Add banner and icon for WP plugin directory.
+* Prevent validation message from sliding up/down repeatedly.
+* Reset validation message element height to auto after slideDown finishes.
+* Add missing wp-util dependency.
 
 = 0.1 =
 

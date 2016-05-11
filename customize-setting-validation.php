@@ -3,7 +3,7 @@
  * Plugin Name: Customize Setting Validation
  * Plugin URI: https://github.com/xwp/wp-customize-setting-validation
  * Description: Core feature plugin for Customizer setting validation, error messaging, and transactional/atomic saves.
- * Version: 0.1
+ * Version: 0.1.1
  * Author: Weston Ruter, XWP
  * Author URI: https://xwp.co/
  * License: GPLv2+

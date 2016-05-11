@@ -67,14 +67,16 @@ class Plugin extends Plugin_Base {
 	public function customize_controls_enqueue_scripts() {
 		$ver = false;
 
+		$suffix = ( SCRIPT_DEBUG ? '' : '.min' ) . '.js';
 		$handle = 'customize-setting-validation';
-		$src = $this->dir_url . 'js/customize-setting-validation.js';
+		$src = plugins_url( 'js/customize-setting-validation' . $suffix, dirname( __FILE__ ) );
 		$deps = array( 'customize-controls', 'wp-util' );
 		$in_footer = true;
 		wp_enqueue_script( $handle, $src, $deps, $ver, $in_footer );
 
+		$suffix = ( SCRIPT_DEBUG ? '' : '.min' ) . '.css';
 		$handle = 'customize-setting-validation';
-		$src = $this->dir_url . 'css/customize-setting-validation.css';
+		$src = plugins_url( 'css/customize-setting-validation' . $suffix, dirname( __FILE__ ) );
 		$deps = array( 'customize-controls' );
 		wp_enqueue_style( $handle, $src, $deps, $ver );
 	}

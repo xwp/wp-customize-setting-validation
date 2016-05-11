@@ -2,7 +2,7 @@
 Contributors: westonruter, xwp
 Requires at least: 4.4
 Tested up to: 4.6-alpha
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,9 @@ The validation is done both on the client and on the server.
 3. Invalid nav menu item title.
 
 == Changelog ==
+
+= 0.1.2 =
+Prevent invalid value from being accepted due to logic error with a variable leaking into the next loop iteration.
 
 = 0.1.1 =
 

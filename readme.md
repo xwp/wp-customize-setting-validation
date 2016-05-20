@@ -2,17 +2,19 @@
 # Customize Setting Validation
 
 ![Banner](wp-assets/banner-1544x500.png)
-Core feature plugin for Customizer setting validation, error messaging, and transactional/atomic saves. See Trac #34893.
+[Obsolete] Core feature plugin for Customizer setting validation, error messaging, and transactional/atomic saves. See Trac #34893.
 
 **Contributors:** [westonruter](https://profiles.wordpress.org/westonruter), [xwp](https://profiles.wordpress.org/xwp)  
 **Requires at least:** 4.4  
 **Tested up to:** 4.6-alpha  
-**Stable tag:** 0.1.2  
+**Stable tag:** 0.1.3  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 
 [![Build Status](https://travis-ci.org/xwp/wp-customize-setting-validation.svg?branch=master)](https://travis-ci.org/xwp/wp-customize-setting-validation) [![Coverage Status](https://coveralls.io/repos/xwp/wp-customize-setting-validation/badge.svg?branch=master)](https://coveralls.io/github/xwp/wp-customize-setting-validation) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com) [![devDependency Status](https://david-dm.org/xwp/wp-customize-setting-validation/dev-status.svg)](https://david-dm.org/xwp/wp-customize-setting-validation#info=devDependencies) 
 
 ## Description ##
+
+Notice: The Customize Setting Validation plugin is obsolete. It was committed during the 4.6 release cycle in <a href="https://core.trac.wordpress.org/changeset/37476">r37476</a>.
 
 This feature plugin allows setting values to be validated and for any validation errors to block the Customizer from
 saving any setting until all are valid. Additionally, once a successful save is performed on the server, any settings
@@ -86,6 +88,9 @@ The validation is done both on the client and on the server.
 ![Invalid nav menu item title.](wp-assets/screenshot-3.png)
 
 ## Changelog ##
+
+### 0.1.3 ###
+Short-circuit and show admin notice if plugin is obsolete and can be uninstalled.
 
 ### 0.1.2 ###
 Prevent invalid value from being accepted due to logic error with a variable leaking into the next loop iteration.

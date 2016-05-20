@@ -41,6 +41,12 @@ class Plugin extends Plugin_Base {
 	 * @action after_setup_theme
 	 */
 	public function init() {
+		require_once ABSPATH . WPINC . '/class-wp-customize-setting.php';
+		if ( method_exists( 'WP_Customize_Setting', 'validate' ) ) {
+			add_action( 'admin_notices', array( $this, 'show_admin_notice_for_obsolescence' ) );
+			return;
+		}
+
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ), 11 );
 
 		$priority = 1;
@@ -57,6 +63,17 @@ class Plugin extends Plugin_Base {
 		add_action( 'customize_save_after', array( $this, 'gather_saved_setting_values' ) );
 
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_templates' ), 1 );
+	}
+
+	/**
+	 * Show admin notice when obsolete.
+	 */
+	public function show_admin_notice_for_obsolescence() {
+		?>
+		<div class="error">
+			<p>The <strong>Customize Setting Validation</strong> plugin is obsolete. It was committed during the 4.6 release cycle in <a href="https://core.trac.wordpress.org/changeset/37476">r37476</a>. You can uninstall this plugin.</p>
+		</div>
+		<?php
 	}
 
 	/**
